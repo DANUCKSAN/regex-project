@@ -5,5 +5,5 @@ from .views import FileUploadView, ProcessFileView
 
 urlpatterns = [
     path('upload/', FileUploadView.as_view(), name='file-upload'),
-    path('process/', ProcessFileView.as_view(), name='file-process'),
+    path('process/', ProcessFileView.as_view(), name='process-file'),
 ]

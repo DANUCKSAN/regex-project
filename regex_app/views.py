@@ -7,6 +7,7 @@ from rest_framework import status
 from .models import UploadedFile
 import pandas as pd
 import re
+from transformers import pipeline
 
 class FileUploadView(APIView):
     parser_classes = (MultiPartParser, FormParser)
@@ -22,16 +23,23 @@ class ProcessFileView(APIView):
         file_id = request.data.get('file_id')
         pattern_description = request.data.get('pattern_description')
         replacement_value = request.data.get('replacement_value')
-        
-        # Dummy LLM for converting natural language to regex
-        regex_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,7}\b'
+
+        # Dummy LLM for converting natural language to regex (Replace with actual LLM API)
+        regex_pattern = self.convert_description_to_regex(pattern_description)
         
         uploaded_file = UploadedFile.objects.get(id=file_id)
         file_path = uploaded_file.file.path
         data = pd.read_csv(file_path) if file_path.endswith('.csv') else pd.read_excel(file_path)
-        
+
         for col in data.select_dtypes(include=[object]):
             data[col] = data[col].apply(lambda x: re.sub(regex_pattern, replacement_value, x) if isinstance(x, str) else x)
-        
+
         response_data = data.to_dict(orient='records')
         return Response(response_data, status=status.HTTP_200_OK)
+
+    def convert_description_to_regex(self, description):
+        # Placeholder: Replace with actual LLM call
+        # For example: return llm_model(description)
+        if "email" in description.lower():
+            return r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,7}\b'
+        return r'.*'
