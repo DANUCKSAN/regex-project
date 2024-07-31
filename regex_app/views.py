@@ -1,4 +1,4 @@
-# regex_app/views.py
+
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -24,7 +24,7 @@ class ProcessFileView(APIView):
         pattern_description = request.data.get('pattern_description')
         replacement_value = request.data.get('replacement_value')
 
-        # Dummy LLM for converting natural language to regex (Replace with actual LLM API)
+       
         regex_pattern = self.convert_description_to_regex(pattern_description)
         
         uploaded_file = UploadedFile.objects.get(id=file_id)
@@ -38,8 +38,7 @@ class ProcessFileView(APIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
     def convert_description_to_regex(self, description):
-        # Placeholder: Replace with actual LLM call
-        # For example: return llm_model(description)
+        
         if "email" in description.lower():
             return r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,7}\b'
         return r'.*'
